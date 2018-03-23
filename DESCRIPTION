@@ -1,0 +1,16 @@
+Package: CannaDistribution
+Title: What the Package Does (one line, title case)
+Version: 0.0.0.9000
+Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+Depends: R (>= 3.4.1)
+License: What license is it under?
+Encoding: UTF-8
+Imports: shiny, CannaQueries, CannaModules, parsleyr, rintrojs, aws.s3, DBI, scales, onfleetR,
+  pool, RMariaDB, DT, dplyr, shinyCleave, tidyr, CannaSelectize, hms, c3, docuSignr, leaflet,
+  jose, openssl, jsonlite, httr, base64enc, twilio, googleAuthR, googlePrintr, CannaMetrc, tidyr
+Remotes: CannaData/CannaQueries, CannaData/CannaModules, CannaData/parsleyr, CannaData/onfleetR,
+  CannaData/shinyCleave, CannaData/CannaSelectize, mrjoh3/c3, CannaData/CannaMetrc,
+  tidyverse/hms, carlganz/twilio, CannaData/googlePrintR, rstudio/DT
+LazyData: true
+RoxygenNote: 6.0.1

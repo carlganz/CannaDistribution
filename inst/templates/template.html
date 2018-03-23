@@ -1,0 +1,119 @@
+<!--
+Copyright (C) 2017 CannaData Solutions
+
+This file is part of CannaFrontdesk.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>CannaData Distribution Web App</title>
+  {{ headContent() }} 
+  {{ shiny::bootstrapLib() }} 
+  {{ htmltools::htmlDependency("selectize", "0.11.2", c(href = "shared/selectize"), stylesheet = "css/selectize.bootstrap3.css", head = format(shiny::tagList(shiny::HTML("
+  <!--[if lt IE 9]>"),
+            shiny::tags$script(src = "shared/selectize/js/es5-shim.min.js"),
+            shiny::HTML("<![endif]-->"), shiny::tags$script(src = "shared/selectize/js/selectize.min.js")))) }} 
+  {{ rintrojs::introjsUI() }} 
+  {{ parsleyr::parsleyLib() }} 
+  {{ shinyCleave::cleaveLib() }} 
+  {{ htmltools::htmlDependency( "CannaDistribution", "0.0.1", system.file(package = "CannaDistribution", "www"), script = "script.js", stylesheet = "style.css", attachment = c("din_light.ttf", "din_medium.ttf")) }} 
+  {{ parsleyr::parsleyrCSS() }} 
+  {{ shiny::includeScript(system.file(package = "CannaSelectize", "javascript", "CannaSelectize.js"))}} 
+  {{ htmltools::htmlDependency("font-awesome","4.7.0", c(href = "shared/font-awesome"), stylesheet = "css/font-awesome.min.css") }}
+  {{ shiny:::datePickerDependency }}
+  <link rel="icon" 
+      type="image/png" 
+      href="https://s3-us-west-2.amazonaws.com/cannadatacdn/CannaData_Logo.png">
+</head>
+
+<body>
+
+  <!--static sidebar
+        <div id="sidebar">
+
+        </div>-->
+
+  <!--static top bar-->
+  {{ CannaModules:::navbarUI(clientName, shiny::selectizeInput(
+                         "patient",
+                         NULL,
+                         NULL,
+                         options = list(maxOptions = 10,
+                                        loadThrottle = NA,
+                                        optgroups = list(
+                           list(value = "orders", label = "Orders"),
+                           list(value = "patient", label = "Customers")
+                         ),
+                                        valueField = "valueFld",
+                                        searchField = c("name", "recId", "id", "phone", "businessName"),
+                                        placeholder = "Search",
+                                        optgroupField = "selectGrp",
+                                        onInitialize = I("
+                                        function() {
+                                        $($('#patient').parents('div')[0]).find('input[type=\"text\"]').css('width', '90%');
+                                        }
+                                        "),
+                                        render = I("{
+                                                   option: function(item, escape) {
+                                                   return item.selectGrp === 'patient' ? ('<div>' +
+                                                   (item.businessName ? ('<strong>' + item.businessName + '</strong>:<br>' +
+                                                   '<ul>' +
+                                                   '<li><span>Name: ' + 
+                                                   escape(item.name) + (item.id ? (' (' + escape(item.id)  + ')') : '') + 
+                                                   '</span></li>' +
+                                                    '<li><span>Phone: ' + 
+                                                   escape(item.phone) + 
+                                                   '</span></li>' +
+                                                   '</ul>' +
+                                                   '</div>') : ('<strong>' + escape(item.name) + (item.id ? (' (' + escape(item.id)  + ')') : '') + '</strong>:') + 
+                                                   '<ul>' +
+                                                   '<li><span>Phone: ' + 
+                                                   escape(item.phone) + 
+                                                   '</span></li>' +
+                                                   '</ul>' + '</div>')) : ('<div>' +
+                                                   '<strong>' + escape(item.name) + '</strong>:' +
+                                                   '<ul>' +
+                                                   '<li><span>Time Ordered: ' + escape(item.timeIn) + '</span></li>' +
+                                                   '<li><span>Status: ' + (item.status === 5 ? 'Unconfirmed' : 'Ready') + '</span></li>' +
+                                                   '</ul>' +
+                                                   '</div>');
+                                                   }               
+}")
+                                        )
+                       ), c(Inventory = "inventory", Connect = "connect", Settings = "settings", Staff = "staff")) }}
+
+  <!--main content javascript depends on names of modules FYI -->
+  <div id="content">
+    <div style = "display:none;"><input id = "access_token" type = "text" class = "form-control" value = "{{ accessToken  }}"></div>
+    {{ 
+    
+        shiny::navlistPanel(id = "tabset", well=FALSE, 
+        shiny::tabPanel("homepage", CannaDistribution:::ordersUI("orders")),
+        shiny::tabPanel("customers", CannaDistribution:::customersUI("customers")),
+        shiny::tabPanel("drivers", CannaDistribution:::driversUI("drivers")),
+        shiny::tabPanel("orderInfo", CannaDistribution:::orderInfoUI("orderInfo")),
+        shiny::tabPanel("patientInfo", CannaDistribution:::patientInfoUI("customerInfo"))
+        )
+        
+    }}
+
+  </div>
+
+</body>
+
+</html>
